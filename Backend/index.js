@@ -34,12 +34,17 @@ const questionRoutes = require('./routes/questionRoutes');  // You need to requi
 app.use('/file', fileRoutes);
 app.use('/question',questionRoutes);
 
-app.use('/', (req, res, next) => {
-    console.log('This always runs');
-    next();
-});
+//Update: For localhost to serverless
+
+//Testing route
+// app.use('/', (req, res, next) => {
+//     console.log('This always runs');
+//     next();
+// });
 
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`Server is running on http://localhost:${port}`);
+// });
+
+module.exports = app;
