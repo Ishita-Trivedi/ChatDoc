@@ -1,19 +1,18 @@
-//Processes file uploads, extracts data
-const fileService = require('../services/fileService');
+// Processes file uploads and extracts data
+const fileService = require('../services/fileService'); // Service to extract data from the file
 
 // Controller to handle file upload and content extraction
 const handleFileUpload = async (req, res) => {
   try {
-    const file = req.file;  // Uploaded file
+    const file = req.file; // Uploaded file in memory
     if (!file) {
       return res.status(400).send('No file uploaded.');
     }
 
-    // Extract data from the file using the service layer
-    //Extraction logic is defined in services/fileService->extractFileData
-    const extractedText = await fileService.extractFileData(file);
+    // Extract data from the file buffer (instead of reading from disk)
+    const extractedText = await fileService.extractFileData(file.buffer, file.mimetype);
 
-    // Send the extracted text back to the frontend or store it in DB for later
+    // Send the extracted text back to the frontend
     res.json({ text: extractedText });
   } catch (error) {
     console.error('File handling error:', error);
