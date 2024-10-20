@@ -15,6 +15,7 @@ import axios from 'axios';
 
 
 const UploadPage = () => {
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   // State for storing the input file
   const [file, setFile] = useState(null);
   const fileContent = useRef(null);
@@ -42,7 +43,7 @@ const UploadPage = () => {
       formData.append('file', file);  // Add file to form data
 
       try {
-        const response = await axios.post('http://localhost:300/file/upload', formData, {
+        const response = await axios.post(`${BACKEND_URL}/file/upload`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',  // Important header for file uploads
           },
@@ -81,12 +82,12 @@ const UploadPage = () => {
 
     // Prepare the data to send to the backend
     const qaPair = { question, fileContent: fileContent };
-    console.log(qaPair);
+    // console.log(qaPair);
     try {
-      const response = await axios.post('http://localhost:300/question/ask', qaPair);
+      const response = await axios.post(`${BACKEND_URL}/question/ask`, qaPair);
       // Assuming backend responds with the OpenAI's answer
       const answer = response.data.answer;
-      console.log('the answer we received', answer);
+      // console.log('the answer we received', answer);
       // Update the Q&A list
       setQlist((prevQlist) => [...prevQlist, { question, answer }]);
       setQuestion("");  // Clear input
@@ -172,9 +173,10 @@ const UploadPage = () => {
 
       <footer className="sticky bottom-0 w-1/2 mx-auto bg-white shadow-lg rounded-t-lg p-2 flex items-center space-x-2">
         <form onSubmit={handleQuestionSubmit} className="flex w-full items-center">
-          <label htmlFor="file-link" className="cursor-pointer p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
+        {/* would later add image upload feat */}
+          {/* <label htmlFor="file-link" className="cursor-pointer p-2 text-gray-500 rounded-lg hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600">
             <FaLink size={24} />
-          </label>
+          </label> */}
           <input
             id="file-link"
             type="file"
