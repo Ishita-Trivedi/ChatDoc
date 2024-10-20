@@ -36,11 +36,10 @@ app.use('/question',questionRoutes);
 
 //Update: For localhost to serverless
 
-//Testing route
-// app.use('/', (req, res, next) => {
-//     console.log('This always runs');
-//     next();
-// });
+// Testing route to check if the server is working
+app.get('/health', (req, res) => {
+    res.status(200).json({ message: 'Server is up and running!' });
+});
 
 
 // app.listen(port, () => {
