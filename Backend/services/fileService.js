@@ -1,26 +1,15 @@
-const pdfParse = require('pdf-parse'); // For PDF parsing
-const { extractTextFromDocx } = require('./docxService'); // Hypothetical docx parser
+const pdfParse = require('pdf-parse');  // PDF parsing
+const extractFileData = async (file) => {
+  const fileType = file.mimetype;
 
-// Service to extract data from the file
-const extractFileData = async (fileBuffer, mimetype) => {
-  try {
-    let extractedText;
-
-    if (mimetype === 'application/pdf') {
-      // Extract text from PDF
-      const data = await pdfParse(fileBuffer);
-      extractedText = data.text;
-    } else if (mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-      // Extract text from DOCX
-      extractedText = await extractTextFromDocx(fileBuffer); // Using a function that parses docx from buffer
-    } else {
-      throw new Error('Unsupported file type');
-    }
-
-    return extractedText;
-  } catch (error) {
-    console.error('Error extracting file data:', error);
-    throw error;
+  if (fileType === 'application/pdf' || fileType === 'application/x-pdf') {
+    const fileData = await pdfParse(file.buffer);  // Parse buffer directly
+    // console.log('Extracted text is:', fileData.text);
+    return fileData.text;  // Return extracted text from PDF
+  } else if (fileType === 'text/plain') {
+    return file.buffer.toString('utf-8');  // Convert buffer to string for text files
+  } else {
+    throw new Error('Unsupported file type.');
   }
 };
 
