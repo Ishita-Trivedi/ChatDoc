@@ -24,7 +24,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Enable CORS
-app.use(cors());
+const corsOptions = {
+  origin: '*',  
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 
 // Import the routes
 const fileRoutes = require('./routes/fileRoutes');  // You need to require your routes
