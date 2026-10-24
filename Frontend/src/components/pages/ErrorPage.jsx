@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, Typography } from "@material-tailwind/react";
 import { useNavigate } from 'react-router-dom'; 
 
@@ -19,7 +18,7 @@ const ErrorPage = () => {
     >
       <div className="bg-white bg-opacity-80 p-10 rounded-lg shadow-md text-center">
         <Typography variant="h5" className="mb-8 animate-pulse">
-          Oops! The page you're looking for doesn't exist.
+          Oops! The page you&apos;re looking for doesn&apos;t exist.
         </Typography>
         <Button
           color="blue"

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaCopyright, FaLinkedin, FaGithub, FaTwitter } from 'react-icons/fa'; // Social icons from Font Awesome
 import { Button, Badge, IconButton } from '@material-tailwind/react';
 

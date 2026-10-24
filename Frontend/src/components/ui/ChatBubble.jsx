@@ -1,54 +1,55 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Check, Copy, FileSearch } from 'lucide-react';
 
-const ChatBubble = ({ qlist }) => {
+const ChatBubble = ({ messages }) => {
   const [copiedIndex, setCopiedIndex] = useState(null);
 
-  const copyToClipboard = (text, index) => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopiedIndex(index);
-      setTimeout(() => setCopiedIndex(null), 2000); // Reset copied index after 2 seconds
-    }).catch(err => {
-      console.error("Could not copy text: ", err);
-    });
+  const copyAnswer = async (answer, index) => {
+    await navigator.clipboard.writeText(answer);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 1800);
   };
 
+  if (!messages.length) {
+    return (
+      <div className="flex min-h-[420px] flex-col items-center justify-center text-center">
+        <div className="rounded-2xl bg-indigo-500/10 p-4 text-indigo-400"><FileSearch size={30} /></div>
+        <h3 className="mt-4 font-semibold">Ask questions, compare sources</h3>
+        <p className="mt-2 max-w-md text-sm leading-6 text-slate-400">ChatDoc retrieves the most relevant passages from every selected document and grounds each answer in page-level evidence.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-4 h-full overflow-y-auto"> {/* Added scrollable container */}
-      {qlist.map((item, index) => (
-        <div key={index} className="mr-auto flex flex-col gap-2 rounded-md bg-neutral-50 p-4 text-neutral-900 w-full max-w-full dark:bg-neutral-900 dark:text-white"> {/* Set to full width */}
-          <span className="font-semibold">Q: {item.question}</span>
-          <div className="flex justify-between items-center">
-            <div className="text-sm text-neutral-600 dark:text-neutral-300">
-              A: {item.answer}
+    <div className="space-y-6">
+      {messages.map((message, index) => (
+        <article key={`${message.question}-${index}`} className="space-y-3">
+          <div className="ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-indigo-500 px-4 py-3 text-sm">{message.question}</div>
+          <div className="max-w-[92%] rounded-2xl rounded-bl-sm border border-white/10 bg-slate-800 p-4">
+            <div className="flex gap-3">
+              <p className="flex-1 whitespace-pre-wrap text-sm leading-6 text-slate-200">{message.answer}</p>
+              <button aria-label="Copy answer" onClick={() => copyAnswer(message.answer, index)} className="h-fit text-slate-500 hover:text-white">
+                {copiedIndex === index ? <Check size={17} className="text-emerald-400" /> : <Copy size={17} />}
+              </button>
             </div>
-            <button 
-              onClick={() => copyToClipboard(item.answer, index)} 
-              className="ml-2 relative inline-flex items-center"
-            >
-              {copiedIndex === index ? (
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  strokeWidth={2} 
-                  stroke="green" 
-                  className="w-5 h-5"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              ) : (
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  viewBox="0 0 24 24" 
-                  fill="currentColor" 
-                  className="w-5 h-5 text-gray-500 hover:text-gray-700"
-                >
-                  <path d="M10 3C8.9 3 8 3.9 8 5V6H6C4.9 6 4 6.9 4 8V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8C20 6.9 19.1 6 18 6H16V5C16 3.9 15.1 3 14 3H10ZM6 8H18V20H6V8Z"/>
-                </svg>
-              )}
-            </button>
+            {message.citations?.length > 0 && (
+              <div className="mt-4 border-t border-white/10 pt-3">
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">Verified sources</p>
+                <div className="flex flex-wrap gap-2">
+                  {message.citations.map((citation) => (
+                    <details key={citation.sourceId} className="group rounded-lg bg-slate-950 px-3 py-2 text-xs">
+                      <summary className="cursor-pointer list-none font-medium text-indigo-300">{citation.fileName} · p. {citation.page}</summary>
+                      <p className="mt-2 max-w-md leading-5 text-slate-400">{citation.excerpt}</p>
+                      {citation.vectorScore !== undefined && (
+                        <p className="mt-2 font-mono text-[10px] text-slate-600">vector {citation.vectorScore} · keyword {citation.keywordScore} · fused {citation.relevance}</p>
+                      )}
+                    </details>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        </article>
       ))}
     </div>
   );

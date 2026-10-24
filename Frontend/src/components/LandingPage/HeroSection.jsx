@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@material-tailwind/react";
 import { MessageCircleQuestion, FileText, Zap } from "lucide-react"
 import { useNavigate } from "react-router-dom";
@@ -29,7 +29,7 @@ const AnimatedBackground = () => (
 export default function HeroSection() {
   const [isDarkMode, setIsDarkMode] = useState(false)
   const navigate=useNavigate();
-  const { isSignedIn, user, isLoaded } = useUser()
+  const { isSignedIn } = useUser()
    const clerk = useClerk()
 
   const handleNavigate=async()=>{

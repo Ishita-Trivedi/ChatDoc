@@ -1,5 +1,4 @@
 // Created ChatDocLogo component to use it at multiple places
-import React from 'react';
 
 //#2563eb is bg-blue-600 tailwind
 const ChatDocLogo = ({ size = 30, color = "#2563eb", text = "ChatDoc" }) => {

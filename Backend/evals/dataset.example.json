@@ -1,0 +1,8 @@
+[
+  {
+    "question": "What is the primary subject of the document?",
+    "documentIds": ["replace-with-an-indexed-document-id"],
+    "expectedAnswerTerms": ["replace", "with", "expected", "terms"],
+    "expectedPages": [1]
+  }
+]

@@ -7,12 +7,15 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { clerkMiddleware } = require('@clerk/express');
 //Require path for static file serving
 const path = require('path');  
 const app = express();
 
+if (process.env.CLERK_SECRET_KEY) app.use(clerkMiddleware());
+
 // Added middleware to parse JSON data
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 // Will change port later/ added fallback port also
 const port = process.env.PORT||3000;
 
@@ -35,16 +38,23 @@ app.use(cors(corsOptions));
 // Import the routes
 const fileRoutes = require('./routes/fileRoutes');  // You need to require your routes
 const questionRoutes = require('./routes/questionRoutes');  // You need to require your routes
+const metricsRoutes = require('./routes/metricsRoutes');
 
 //Set of routes
 app.use('/file', fileRoutes);
 app.use('/question',questionRoutes);
+app.use('/metrics', metricsRoutes);
 
 //Update: For localhost to serverless
 
 // Testing route to check if the server is working
 app.get('/health', (req, res) => {
-    res.status(200).json({ message: 'Server is up and running!' });
+    res.status(200).json({ message: 'Server is up and running!', aiConfigured: Boolean(process.env.OPENAI_API_KEY) });
+});
+
+app.use((error, _req, res, _next) => {
+  console.error(error);
+  res.status(400).json({ error: error.message || 'Invalid request.' });
 });
 
 

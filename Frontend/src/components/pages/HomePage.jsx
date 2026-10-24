@@ -1,4 +1,3 @@
-import { Button } from "@material-tailwind/react";
 import StickyNavbar from '../LandingPage/StickyNavBar';
 import HeroSection from "../LandingPage/HeroSection";
 import FAQSection from '../LandingPage/FAQSection';

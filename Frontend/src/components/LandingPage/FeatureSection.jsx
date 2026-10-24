@@ -1,6 +1,5 @@
 'use client'
 
-import React from "react"
 import { motion } from "framer-motion"
 import { Zap, Shield, HeadphonesIcon, PuzzleIcon } from "lucide-react"
 
