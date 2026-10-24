@@ -3,16 +3,19 @@ import HeroSection from "../LandingPage/HeroSection";
 import FAQSection from '../LandingPage/FAQSection';
 import FeatureSection from '../LandingPage/FeatureSection'
 import Footer from "../LandingPage/Footer";
+import useTheme from '../../hooks/useTheme';
 
 const HomePage = () => {
+  const { isDarkMode, toggleTheme } = useTheme();
+
   return (
-    <>
-    <StickyNavbar/>
+    <div className="theme-page min-h-screen transition-colors duration-300">
+    <StickyNavbar isDarkMode={isDarkMode} onToggleTheme={toggleTheme}/>
     <HeroSection/>
     <FeatureSection/>
     <FAQSection/>
     <Footer/>
-   </>
+   </div>
   );
 };
 

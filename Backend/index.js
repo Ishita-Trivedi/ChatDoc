@@ -49,7 +49,15 @@ app.use('/metrics', metricsRoutes);
 
 // Testing route to check if the server is working
 app.get('/health', (req, res) => {
-    res.status(200).json({ message: 'Server is up and running!', aiConfigured: Boolean(process.env.OPENAI_API_KEY) });
+    res.status(200).json({
+      message: 'Server is up and running!',
+      aiConfigured: Boolean(process.env.OPENAI_API_KEY),
+      authConfigured: Boolean(process.env.CLERK_SECRET_KEY),
+      storageMode: process.env.MONGODB_URI ? 'persistent' : 'temporary',
+      chatModel: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
+      embeddingModel: process.env.OPENAI_EMBEDDING_MODEL || 'text-embedding-3-small',
+      limits: { filesPerUpload: 10, fileSizeMb: 10, questionsPerMinute: 30 },
+    });
 });
 
 app.use((error, _req, res, _next) => {
@@ -58,8 +66,10 @@ app.use((error, _req, res, _next) => {
 });
 
 
-app.listen(port, () => {
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-});
+  });
+}
 
 module.exports = app;

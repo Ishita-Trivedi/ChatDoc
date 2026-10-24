@@ -1,19 +1,11 @@
 import { FaCopyright, FaLinkedin, FaGithub, FaTwitter } from 'react-icons/fa'; // Social icons from Font Awesome
-import { Button, Badge, IconButton } from '@material-tailwind/react';
+import { Button, IconButton } from '@material-tailwind/react';
 
 // Animated Heart Component
 const AnimatedHeart = () => (
   <span className="relative inline-block">
     <span className="absolute inset-0 bg-red-500 rounded-full animate-ping" />
     <span className="relative text-red-500 animate-bounce">❤️</span>
-  </span>
-);
-
-// Animated Dot Component
-const AnimatedDot = () => (
-  <span className="relative inline-block">
-    <span className="absolute inset-0 bg-blue-500 rounded-full animate-ping" />
-    <span className="relative text-blue-500">New</span>
   </span>
 );
 
@@ -27,7 +19,7 @@ export default function Footer() {
   };
   return (
     // Transitioning footer shades
-    <footer className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-900 text-white">
+    <footer className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-900 text-white transition-colors duration-300 dark:!from-slate-900 dark:!via-slate-950 dark:!to-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
@@ -43,11 +35,6 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-center text-center">
             <h3 className="text-lg font-semibold mb-4">Feedback</h3>
             <div className="flex items-center">
-              <Badge color="blue" className="animate-bounce mr-2">
-                <span className="flex items-center">
-                  <AnimatedDot /> 
-                </span>
-              </Badge>
               <span className="relative inline-block ">
               {/* <span className="absolute inset-0 bg-blue-500 rounded-full animate-ping" /> */}
 

@@ -20,7 +20,7 @@ const ChatDocLogo = ({ size = 30, color = "#2563eb", text = "ChatDoc" }) => {
         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
         <path d="M12 17h.01" />
       </svg>
-      <p className="text-2xl font-semibold transition-transform duration-300 transform hover:scale-105 ml-2">
+      <p className="theme-heading ml-2 text-2xl font-semibold transition-transform duration-300 hover:scale-105">
         {text}
       </p>
     </div>

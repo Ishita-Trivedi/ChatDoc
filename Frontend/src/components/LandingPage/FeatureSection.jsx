@@ -1,28 +1,38 @@
 'use client'
 
 import { motion } from "framer-motion"
-import { Zap, Shield, HeadphonesIcon, PuzzleIcon } from "lucide-react"
+import { BadgeCheck, BrainCircuit, Files, GitCompareArrows, Search, ShieldCheck } from "lucide-react"
 
 const features = [
   {
-    title: "User-Friendly Interface",
-    description: "Our platform is designed with ease of use in mind, making navigation effortless.",
-    icon: Zap,
+    title: "Grounded Document Q&A",
+    description: "Ask natural-language questions and receive answers grounded only in evidence retrieved from your documents.",
+    icon: BrainCircuit,
   },
   {
-    title: "Secure Data Management",
-    description: "We prioritize your data security with advanced encryption and privacy measures.",
-    icon: Shield,
+    title: "Multi-Document Conversations",
+    description: "Select multiple PDFs or text files and carry context-aware conversations across your entire knowledge base.",
+    icon: Files,
   },
   {
-    title: "24/7 Customer Support",
-    description: "Our dedicated support team is here to assist you around the clock.",
-    icon: HeadphonesIcon,
+    title: "Verified Page Citations",
+    description: "Every supported answer links back to validated filenames, page numbers, and the exact source excerpts.",
+    icon: BadgeCheck,
   },
   {
-    title: "Seamless Integrations",
-    description: "Easily integrate with your favorite tools and platforms for a streamlined experience.",
-    icon: PuzzleIcon,
+    title: "Hybrid AI Retrieval",
+    description: "Semantic embeddings and exact keyword search are fused to find concepts, names, codes, and precise facts.",
+    icon: Search,
+  },
+  {
+    title: "Cited Document Comparison",
+    description: "Compare conclusions, risks, and recommendations across documents with evidence for every factual claim.",
+    icon: GitCompareArrows,
+  },
+  {
+    title: "Private and Explainable",
+    description: "User-isolated document access, prompt-injection defenses, retrieval scores, and transparent AI status build trust.",
+    icon: ShieldCheck,
   },
 ]
 
@@ -32,26 +42,26 @@ const FeatureCard = ({ feature, index }) => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ scale: 1.05 }}
-      className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+      whileHover={{ y: -6 }}
+      className="theme-card group rounded-2xl border p-6 shadow-sm transition-all duration-300 hover:!border-blue-300 hover:shadow-xl dark:hover:shadow-blue-950/30"
     >
-      <div className="flex items-center justify-center w-12 h-12 mb-4 bg-primary rounded-full">
+      <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-md shadow-blue-500/20 transition-transform group-hover:scale-110">
         <feature.icon className="w-6 h-6 text-white" />
       </div>
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">{feature.title}</h3>
-      <p className="text-gray-600">{feature.description}</p>
+      <h3 className="theme-heading mb-2 text-xl font-semibold">{feature.title}</h3>
+      <p className="theme-body leading-7">{feature.description}</p>
     </motion.div>
   )
 }
 
 export default function FeatureSection() {
   return (
-    <section className="py-24 bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-      <div className="absolute inset-0 z-0 opacity-50">
+    <section className="theme-section relative overflow-hidden py-24 transition-colors duration-300">
+      <div className="theme-body absolute inset-0 z-0 opacity-20">
         <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
           <defs>
             <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,0,0,0.05)" strokeWidth="0.5" />
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5" />
             </pattern>
           </defs>
           <rect width="100" height="100" fill="url(#grid)" />
@@ -64,14 +74,15 @@ export default function FeatureSection() {
           transition={{ duration: 0.5 }}
           className="mb-16 text-center"
         >
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Features</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover the amazing features that set us apart and elevate your experience.
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">Built for trustworthy AI</p>
+          <h2 className="theme-heading mb-4 text-4xl font-bold">Turn documents into cited answers</h2>
+          <p className="theme-body mx-auto max-w-2xl text-xl">
+            Production-minded retrieval, transparent evidence, and secure multi-document intelligence in one workspace.
           </p>
         </motion.div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
-            <FeatureCard key={index} feature={feature} index={index} />
+            <FeatureCard key={feature.title} feature={feature} index={index} />
           ))}
         </div>
       </div>

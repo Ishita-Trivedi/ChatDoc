@@ -14,7 +14,7 @@ const FAQSection = () => {
     },
     {
       question: "What types of documents can I use with ChatDoc?",
-      answer: "ChatDoc supports .docx, .pdf, and .txt file formats.",
+      answer: "ChatDoc supports text-based PDF and TXT files. Scanned PDFs require OCR before upload.",
     },
     {
       question: "What if I encounter technical issues?",
@@ -27,10 +27,10 @@ const FAQSection = () => {
   };
 
   return (
-    <section className="py-24">
+    <section className="theme-page py-24 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16">
-          <h2 className="text-4xl font-manrope text-center font-bold text-gray-900 leading-[3.25rem]">
+          <h2 className="theme-heading text-center font-manrope text-4xl font-bold leading-[3.25rem]">
             Frequently Asked Questions
           </h2>
         </div>
@@ -38,17 +38,17 @@ const FAQSection = () => {
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className={`accordion border border-solid border-gray-300 p-4 rounded-xl mb-8 transition duration-500 ${openIndex === index ? 'bg-indigo-50 border-indigo-600' : ''}`}
+              className={`theme-card accordion mb-8 rounded-xl border border-solid p-4 transition duration-500 ${openIndex === index ? '!border-indigo-500' : ''}`}
             >
               <button
-                className="accordion-toggle group inline-flex items-center justify-between text-left text-lg font-normal leading-8 text-gray-900 w-full transition duration-500 hover:text-indigo-600"
+                className="theme-heading accordion-toggle group inline-flex w-full items-center justify-between text-left text-lg font-normal leading-8 transition duration-500 hover:!text-indigo-500"
                 onClick={() => handleToggle(index)}
                 aria-controls={`collapse-${index}`}
                 aria-expanded={openIndex === index}
               >
                 <h5>{faq.question}</h5>
                 <svg
-                  className={`w-6 h-6 text-gray-900 transition duration-500 ${openIndex === index ? 'hidden' : 'block'} group-hover:text-indigo-600`}
+                  className={`h-6 w-6 text-gray-900 transition duration-500 dark:text-slate-200 ${openIndex === index ? 'hidden' : 'block'} group-hover:text-indigo-600`}
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -62,7 +62,7 @@ const FAQSection = () => {
                   ></path>
                 </svg>
                 <svg
-                  className={`w-6 h-6 text-gray-900 transition duration-500 ${openIndex === index ? 'block' : 'hidden'} group-hover:text-indigo-600`}
+                  className={`h-6 w-6 text-gray-900 transition duration-500 dark:text-slate-200 ${openIndex === index ? 'block' : 'hidden'} group-hover:text-indigo-600`}
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +81,7 @@ const FAQSection = () => {
                 className={`accordion-content w-full overflow-hidden pr-4 transition-max-height duration-500 ${openIndex === index ? 'max-h-60' : 'max-h-0'}`}
                 aria-labelledby={`heading-${index}`}
               >
-                <p className="text-base text-gray-900 font-normal leading-6">
+                <p className="theme-body text-base font-normal leading-6">
                   {faq.answer}
                 </p>
               </div>
