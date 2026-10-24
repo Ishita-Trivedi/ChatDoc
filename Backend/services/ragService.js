@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { createEmbeddings, answerFromSources } = require('./openAIService');
+const { createEmbeddings, answerFromSources } = require('./aiService');
 const { saveDocument, findDuplicate, getChunks } = require('./documentStore');
 const { recordMetric } = require('./metricsService');
 

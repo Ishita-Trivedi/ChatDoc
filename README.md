@@ -5,7 +5,7 @@ ChatDoc is a full-stack RAG application for asking grounded questions across mul
 ## AI architecture
 
 1. PDF text is extracted page by page and split into overlapping chunks.
-2. OpenAI embeddings are generated once during upload and stored in the document index.
+2. Provider-specific embeddings are generated once during upload and stored in the document index.
 3. A question is embedded and compared with chunks from every selected document using cosine similarity.
 4. Only the top passages are sent to the chat model.
 5. The model returns structured source IDs; the backend validates them before exposing file, page, excerpt, and relevance metadata.
@@ -14,7 +14,9 @@ Conversation history helps resolve follow-up questions, but it is never treated 
 
 ## Environment
 
-Create `Backend/.env` with `OPENAI_API_KEY`, optionally `OPENAI_CHAT_MODEL`, `OPENAI_EMBEDDING_MODEL`, and `PORT`. Create `Frontend/.env` with `VITE_CLERK_PUBLISHABLE_KEY` and `VITE_BACKEND_URL`.
+Create `Backend/.env` with `AI_PROVIDER=gemini`, `GEMINI_API_KEY`, and optional `GEMINI_CHAT_MODEL` and `GEMINI_EMBEDDING_MODEL` overrides. Set `AI_PROVIDER=openai` and provide the corresponding `OPENAI_*` variables to switch back to OpenAI. Create `Frontend/.env` with `VITE_CLERK_PUBLISHABLE_KEY` and `VITE_BACKEND_URL`.
+
+The selected provider is used for both document and question embeddings. Re-index documents after changing the embedding provider or model; vectors produced by different models must not be mixed.
 
 When `MONGODB_URI` is configured, documents, page chunks, and embeddings persist in MongoDB and are isolated by the authenticated Clerk user. Without MongoDB, ChatDoc falls back to an in-memory development store.
 

@@ -8,6 +8,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { clerkMiddleware } = require('@clerk/express');
+const { getAiProviderMetadata } = require('./config/aiProvider');
 //Require path for static file serving
 const path = require('path');  
 const app = express();
@@ -49,13 +50,15 @@ app.use('/metrics', metricsRoutes);
 
 // Testing route to check if the server is working
 app.get('/health', (req, res) => {
+    const ai = getAiProviderMetadata();
     res.status(200).json({
       message: 'Server is up and running!',
-      aiConfigured: Boolean(process.env.OPENAI_API_KEY),
+      aiConfigured: ai.configured,
+      aiProvider: ai.provider,
       authConfigured: Boolean(process.env.CLERK_SECRET_KEY),
       storageMode: process.env.MONGODB_URI ? 'persistent' : 'temporary',
-      chatModel: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
-      embeddingModel: process.env.OPENAI_EMBEDDING_MODEL || 'text-embedding-3-small',
+      chatModel: ai.chatModel,
+      embeddingModel: ai.embeddingModel,
       limits: { filesPerUpload: 10, fileSizeMb: 10, questionsPerMinute: 30 },
     });
 });

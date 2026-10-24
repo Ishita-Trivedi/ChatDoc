@@ -1,4 +1,4 @@
-//Sends user questions and file data to OpenAI
+// Sends user questions and retrieved document evidence to the configured AI provider.
 const express = require('express');
 const { handleUserQuestion, handleStreamingQuestion, handleComparison } = require('../controllers/questionController');
 const { requireApiAuth } = require('../middleware/auth');

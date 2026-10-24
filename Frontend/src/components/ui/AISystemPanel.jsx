@@ -44,14 +44,14 @@ const AISystemPanel = ({ refreshKey = 0 }) => {
       {!health?.aiConfigured && (
         <div className="flex gap-2 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-xs leading-5 text-amber-700 dark:text-amber-200">
           <TriangleAlert className="mt-0.5 shrink-0" size={15} />
-          Add an OpenAI key to the backend to enable indexing and answers.
+          Add an API key for the selected AI provider to enable indexing and answers.
         </div>
       )}
 
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div className="theme-subtle rounded-xl border p-3">
           <BrainCircuit size={15} className="mb-2 text-indigo-400" />
-          <p className="theme-body">Model</p>
+          <p className="theme-body capitalize">{health?.aiProvider ? `${health.aiProvider} model` : 'Model'}</p>
           <p className="theme-heading mt-1 truncate">{health?.chatModel || 'Unavailable'}</p>
         </div>
         <div className="theme-subtle rounded-xl border p-3">
@@ -76,7 +76,7 @@ const AISystemPanel = ({ refreshKey = 0 }) => {
         <p>Hybrid semantic + keyword retrieval</p>
         <p>Validated page citations and user-isolated documents</p>
         <p>{health?.limits?.questionsPerMinute || 30} questions/min · {health?.limits?.fileSizeMb || 10} MB/file</p>
-        <p className="text-amber-300/80">Text PDFs and TXT only · scanned PDFs require OCR</p>
+        <p className="text-amber-600/90 dark:text-amber-300/80">Text PDFs and TXT only · scanned PDFs require OCR</p>
       </div>
     </div>
   );

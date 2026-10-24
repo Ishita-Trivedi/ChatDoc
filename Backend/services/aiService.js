@@ -1,18 +1,31 @@
 const OpenAI = require('openai');
+const { GEMINI_BASE_URL, getAiProviderConfig } = require('../config/aiProvider');
 
-let client;
+let cachedClient;
+let cachedClientKey;
+
 const getClient = () => {
-  if (!process.env.OPENAI_API_KEY) throw new Error('OPENAI_API_KEY is not configured.');
-  client ||= new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  return client;
+  const config = getAiProviderConfig();
+  if (!config.apiKey) throw new Error(`${config.apiKeyName} is not configured.`);
+
+  const clientKey = `${config.provider}:${config.apiKey}:${config.baseURL || ''}`;
+  if (!cachedClient || cachedClientKey !== clientKey) {
+    cachedClient = new OpenAI({
+      apiKey: config.apiKey,
+      ...(config.baseURL ? { baseURL: config.baseURL } : {}),
+    });
+    cachedClientKey = clientKey;
+  }
+  return { client: cachedClient, config };
 };
 
 const createEmbeddings = async (texts) => {
   if (!texts.length) return [];
+  const { client, config } = getClient();
   const embeddings = [];
   for (let offset = 0; offset < texts.length; offset += 100) {
-    const response = await getClient().embeddings.create({
-      model: process.env.OPENAI_EMBEDDING_MODEL || 'text-embedding-3-small',
+    const response = await client.embeddings.create({
+      model: config.embeddingModel,
       input: texts.slice(offset, offset + 100),
     });
     embeddings.push(...response.data.map((item) => item.embedding));
@@ -24,8 +37,9 @@ const answerFromSources = async ({ question, history, sources }) => {
   const context = sources.map((source) =>
     `${source.sourceId} | ${source.fileName} | page ${source.page}\n${source.text}`,
   ).join('\n\n');
-  const response = await getClient().chat.completions.create({
-    model: process.env.OPENAI_CHAT_MODEL || 'gpt-4o-mini',
+  const { client, config } = getClient();
+  const response = await client.chat.completions.create({
+    model: config.chatModel,
     response_format: { type: 'json_object' },
     temperature: 0,
     messages: [
@@ -49,4 +63,8 @@ const answerFromSources = async ({ question, history, sources }) => {
   try { return JSON.parse(content); } catch { return { answer: content, citationIds: [] }; }
 };
 
-module.exports = { createEmbeddings, answerFromSources };
+module.exports = {
+  createEmbeddings,
+  answerFromSources,
+  __testables: { getProviderConfig: getAiProviderConfig, GEMINI_BASE_URL },
+};

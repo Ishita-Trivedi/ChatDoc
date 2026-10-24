@@ -33,6 +33,7 @@ const handleListFiles = async (req, res) => {
     return res.json({ documents: documents.map((document) => ({
       id: document.documentId, name: document.name, pageCount: document.pageCount,
       chunkCount: document.chunkCount, createdAt: document.createdAt,
+      embeddingProvider: document.embeddingProvider, embeddingModel: document.embeddingModel,
     })) });
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Could not list documents.' });

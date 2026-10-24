@@ -1,44 +1,77 @@
 const Document = require('../models/Document');
 const Chunk = require('../models/Chunk');
 const { connectDatabase } = require('../config/database');
+const { getEmbeddingIdentity } = require('../config/aiProvider');
 
 const memoryDocuments = new Map();
 
 const keyFor = (ownerId, documentId) => `${ownerId}:${documentId}`;
 
+const resolveIdentity = (value = {}) => {
+  const active = getEmbeddingIdentity();
+  return {
+    embeddingProvider: value.embeddingProvider || active.embeddingProvider,
+    embeddingModel: value.embeddingModel || active.embeddingModel,
+  };
+};
+
 const saveDocument = async ({ document, chunks }) => {
+  const identity = resolveIdentity(document);
+  const storedDocument = { ...document, ...identity };
+  const storedChunks = chunks.map((chunk) => ({ ...chunk, ...identity }));
   if (await connectDatabase()) {
-    await Document.create(document);
+    await Document.create(storedDocument);
     try {
-      await Chunk.insertMany(chunks, { ordered: false });
+      await Chunk.insertMany(storedChunks, { ordered: false });
     } catch (error) {
-      await Document.deleteOne({ documentId: document.documentId, ownerId: document.ownerId });
+      await Document.deleteOne({ documentId: storedDocument.documentId, ownerId: storedDocument.ownerId });
       throw error;
     }
     return;
   }
-  memoryDocuments.set(keyFor(document.ownerId, document.documentId), { ...document, chunks });
+  memoryDocuments.set(
+    keyFor(storedDocument.ownerId, storedDocument.documentId),
+    { ...storedDocument, chunks: storedChunks },
+  );
 };
 
-const findDuplicate = async (ownerId, checksum) => {
+const findDuplicate = async (ownerId, checksum, requestedIdentity = {}) => {
+  const identity = resolveIdentity(requestedIdentity);
   if (await connectDatabase()) {
-    return Document.findOne({ ownerId, checksum, status: 'ready' }).lean();
+    return Document.findOne({ ownerId, checksum, status: 'ready', ...identity }).lean();
   }
-  return [...memoryDocuments.values()].find((document) => document.ownerId === ownerId && document.checksum === checksum);
+  return [...memoryDocuments.values()].find((document) => (
+    document.ownerId === ownerId
+    && document.checksum === checksum
+    && document.embeddingProvider === identity.embeddingProvider
+    && document.embeddingModel === identity.embeddingModel
+  ));
 };
 
-const getChunks = async (ownerId, documentIds) => {
+const getChunks = async (ownerId, documentIds, requestedIdentity = {}) => {
+  const identity = resolveIdentity(requestedIdentity);
   if (await connectDatabase()) {
-    return Chunk.find({ ownerId, documentId: { $in: documentIds } }).lean();
+    return Chunk.find({ ownerId, documentId: { $in: documentIds }, ...identity }).lean();
   }
-  return documentIds.flatMap((id) => memoryDocuments.get(keyFor(ownerId, id))?.chunks || []);
+  return documentIds.flatMap((id) => {
+    const document = memoryDocuments.get(keyFor(ownerId, id));
+    if (!document
+      || document.embeddingProvider !== identity.embeddingProvider
+      || document.embeddingModel !== identity.embeddingModel) return [];
+    return document.chunks;
+  });
 };
 
-const listDocuments = async (ownerId) => {
+const listDocuments = async (ownerId, requestedIdentity = {}) => {
+  const identity = resolveIdentity(requestedIdentity);
   if (await connectDatabase()) {
-    return Document.find({ ownerId, status: 'ready' }).sort({ createdAt: -1 }).lean();
+    return Document.find({ ownerId, status: 'ready', ...identity }).sort({ createdAt: -1 }).lean();
   }
-  return [...memoryDocuments.values()].filter((document) => document.ownerId === ownerId);
+  return [...memoryDocuments.values()].filter((document) => (
+    document.ownerId === ownerId
+    && document.embeddingProvider === identity.embeddingProvider
+    && document.embeddingModel === identity.embeddingModel
+  ));
 };
 
 const deleteDocument = async (ownerId, documentId) => {
@@ -50,4 +83,11 @@ const deleteDocument = async (ownerId, documentId) => {
   return memoryDocuments.delete(keyFor(ownerId, documentId));
 };
 
-module.exports = { saveDocument, findDuplicate, getChunks, listDocuments, deleteDocument };
+module.exports = {
+  saveDocument,
+  findDuplicate,
+  getChunks,
+  listDocuments,
+  deleteDocument,
+  __testables: { resolveIdentity },
+};
